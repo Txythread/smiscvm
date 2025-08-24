@@ -21,4 +21,4 @@ target
 .idea/
 
 # Auto-generated content
-.instruction-gen/
+*instruction-gen*
