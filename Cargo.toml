@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 colorize = "0.1.0"
 include_dir = "0.7.4"
+rand = "0.9.0"
