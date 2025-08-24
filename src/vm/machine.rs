@@ -215,8 +215,8 @@ mod tests {
         }
 
         // Test if expectation matches reality
-        assert_eq!(machine.state.current_instruction, 0x50_00_00_01);
-        assert_eq!(machine.state.micro_op_counter, 1);
-        assert_eq!(machine.state.registers[0], 0xB);
+        assert_eq!(machine.state.current_instruction, 0x50_00_00_01);   // SUCCESS: Instruction loaded correctly
+        assert_eq!(machine.state.micro_op_counter, 1);                  // SUCCESS: Reset successful
+        assert_eq!(machine.state.registers[0], 0xB);                    // SUCCESS: Add successful
     }
 }
