@@ -18,7 +18,7 @@ impl Peripheral for MemOutPeripheral {
         let data4 = state.memory[address as usize + 3];
 
         // Add the bytes so they form a dword
-        let data: u32 = ((data4 as u32) << 24) | ((data3 as u32) << 16) | ((data2 as u32) << 8) | data1 as u32;
+        let data: u32 = ((data1 as u32) << 24) | ((data2 as u32) << 16) | ((data3 as u32) << 8) | data4 as u32;
 
         state.push_to_main_bus(data);
     }

@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::string::ToString;
 use include_dir::{include_dir, Dir};
 
 pub const OUTPUT_MAP_STRING: [&str; 20] = ["PC_OUT", "PC_IN", "PC_INC", "MEM_ADDR_PTR_IN", "ALU_IN_A", "ALU_IN_B", "CAL_REG_A_IN", "CAL_REG_B_IN", "CAL_REG_A_OUT", "CAL_REG_B_OUT", "IMMEDIATE_OUT", "INSTR_IN", "MEM_OUT", "PLUS_OUT", "RESET_MICRO", "STDTRANS_IN", "STDTRANS_OUT", "STDTRANS_SEND", "ZF_IN", "ZF_OUT"]; // The left-most string in the list will end up in the LSb of the control 'word'

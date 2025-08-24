@@ -12,12 +12,12 @@ use crate::vm::peripherals::reset_micro_peripheral::ResetMicroPeripheral;
 pub struct Machine {
     pub peripherals: Vec<Box<dyn Peripheral>>,
     pub state: MachineState,
-    pub instructions: HashMap<u16, Vec<u8>>,
+    pub instructions: HashMap<u16, Vec<u8>>, /* TODO: is pub necessary */
 }
 
 impl Machine {
-    pub fn new(peripherals: Vec<Box<dyn Peripheral>>) -> Self {
-        Machine{ peripherals, state: MachineState::new(), instructions: get_generated_instructions() }
+    pub fn new() -> Self {
+        Machine{ peripherals: vec![], state: MachineState::new(), instructions: get_generated_instructions() }
     }
 
     pub fn set_up_peripherals(&mut self) {
@@ -147,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_execute_control_indexes(){
-        let mut machine = Machine::new(vec![]);
+        let mut machine = Machine::new();
 
         machine.state.registers[0] = 10;
 
@@ -158,7 +158,7 @@ mod tests {
 
     #[test]
     fn test_clock_pulse(){
-        let mut machine = Machine::new(vec![]);
+        let mut machine = Machine::new();
 
         // Add the peripherals
         machine.set_up_peripherals();
@@ -191,7 +191,7 @@ mod tests {
 
     #[test]
     fn test_add_instruction(){
-        let mut machine = Machine::new(vec![]);
+        let mut machine = Machine::new();
 
         // Add the peripherals
         machine.set_up_peripherals();
@@ -201,10 +201,10 @@ mod tests {
         // it'll still execute the correct one
         let instruction = 0x50_00_00_01;
         machine.state.current_instruction = instruction;
-        machine.state.memory[3] = ((instruction & 0xFF_00_00_00) >> 24) as u8;
-        machine.state.memory[2] = ((instruction & 0x00_FF_00_00) >> 16) as u8;
-        machine.state.memory[1] = ((instruction & 0x00_00_FF_00) >> 8) as u8;
-        machine.state.memory[0] = (instruction & 0x00_00_00_FF) as u8;
+        machine.state.memory[0] = ((instruction & 0xFF_00_00_00) >> 24) as u8;
+        machine.state.memory[1] = ((instruction & 0x00_FF_00_00) >> 16) as u8;
+        machine.state.memory[2] = ((instruction & 0x00_00_FF_00) >> 8) as u8;
+        machine.state.memory[3] = (instruction & 0x00_00_00_FF) as u8;
 
         // Put an initial value of 0xA into reg 0 to make sure it's not just move functionality later
         machine.state.registers[0] = 0xA;

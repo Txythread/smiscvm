@@ -1,4 +1,4 @@
 mod peripheral;
 mod machine_state;
-mod machine;
+pub mod machine;
 mod peripherals;

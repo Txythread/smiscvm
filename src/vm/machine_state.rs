@@ -37,6 +37,7 @@ impl MachineState {
         // In reality, the 0 would win,
         // in this simulated case, the one will.
         // However, the approximation is close enough for my purposes.
+        // If you can even call that an "approximation".
         self.main_bus |= value as i32;
     }
 
