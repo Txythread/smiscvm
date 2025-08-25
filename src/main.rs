@@ -1,10 +1,15 @@
 use std::env;
 use std::fmt::{Debug, Formatter};
 use std::process::exit;
+use std::thread::sleep;
 use std::fs;
 use std::path::PathBuf;
+use std::time::Duration;
 use colorize;
 use colorize::AnsiColor;
+use crossterm::execute;
+use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
+use crossterm::cursor::{Hide, Show};
 use crate::vm::machine::Machine;
 use crate::help::help::print_help;
 
@@ -36,10 +41,11 @@ impl Debug for ArgumentList{
         f.debug_struct("ArgumentList")
             .field("file", &self.file)
             .field("help", &self.help)
-            .field("herz", &self.hertz)
+            .field("hertz", &self.hertz)
             .finish()
     }
 }
+
 
 impl PartialEq for ArgumentList{
     fn eq(&self, other: &Self) -> bool{
@@ -93,12 +99,30 @@ fn main() {
     // Set the instruction to 'add x0, 0', which should do nothing but load the next instruction in practice.
     machine.state.current_instruction = 0x50_00_00_00;
 
+    execute!(std::io::stdout(), EnterAlternateScreen).unwrap();
+
+    execute!(std::io::stdout(), Hide).unwrap();
     loop {
         machine.simulate_clock_pulse();
+
+        machine.state.print(false);
+
+        if let Some(hertz) = args.hertz {
+            sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
+        }
+
+        machine.state.print(true);
+
+        if let Some(hertz) = args.hertz {
+            sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
+        }
+
         if machine.state.current_instruction == 0 && machine.state.program_counter != 0{
-            return;
+            break;
         }
     }
+
+    execute!(std::io::stdout(), LeaveAlternateScreen, Hide).unwrap();
 
 }
 
@@ -145,7 +169,7 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
                         if let Some(value) = value.parse::<u16>().ok() {
                             result.hertz = Some(value);
                         }else{
-                            let msg = format!("Positive integer (lower than 2^16) expected as a value for herz, but {} was found.", value).red();
+                            let msg = format!("Positive integer (lower than 2^16) expected as a value for hertz, but {} was found.", value).red();
                             eprintln!("{}", msg);
                             exit(100);
                         }

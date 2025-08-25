@@ -12,7 +12,7 @@ use crate::vm::peripherals::reset_micro_peripheral::ResetMicroPeripheral;
 pub struct Machine {
     pub peripherals: Vec<Box<dyn Peripheral>>,
     pub state: MachineState,
-    pub instructions: HashMap<u16, Vec<u8>>, /* TODO: is pub necessary */
+    instructions: HashMap<u16, Vec<u8>>,
 }
 
 impl Machine {
@@ -209,8 +209,8 @@ mod tests {
         // Put an initial value of 0xA into reg 0 to make sure it's not just move functionality later
         machine.state.registers[0] = 0xA;
 
-        // Execute 5 clock cycles
-        for _ in 0..6{
+        // Execute 6 clock cycles
+        for _ in 0..=5{
             machine.simulate_clock_pulse();
         }
 

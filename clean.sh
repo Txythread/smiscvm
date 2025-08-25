@@ -1,2 +1,2 @@
-rm instruction-gen
+rm -r instruction-gen
 cargo clean

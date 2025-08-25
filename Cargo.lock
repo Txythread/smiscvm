@@ -526,6 +526,7 @@ name = "smiscvm"
 version = "0.1.0"
 dependencies = [
  "colorize",
+ "crossterm",
  "include_dir",
  "rand",
  "termimad",
