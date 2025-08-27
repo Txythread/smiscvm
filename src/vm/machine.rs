@@ -4,10 +4,15 @@ use crate::instruction::instruction::{ OUTPUT_MAP_STRING, get_generated_instruct
 use crate::vm::machine_state::MachineState;
 use crate::vm::peripheral::Peripheral;
 use crate::vm::peripherals::immediate_out_peripheral::ImmediateOutPeripheral;
+use crate::vm::peripherals::left_shift_peripheral::LeftShiftPeripheral;
+use crate::vm::peripherals::mem_byte_out_peripheral::MemByteOutPeripheral;
 use crate::vm::peripherals::mem_out_peripheral::MemOutPeripheral;
+use crate::vm::peripherals::minus_peripheral::SubPeripheral;
 use crate::vm::peripherals::pc_inc_peripheral::PCIncPeripheral;
 use crate::vm::peripherals::plus_peripheral::PlusPeripheral;
 use crate::vm::peripherals::reset_micro_peripheral::ResetMicroPeripheral;
+use crate::vm::peripherals::zero_flag_in_peripheral::ZeroFlagInPeripheral;
+use crate::vm::peripherals::zero_flag_out_peripheral::ZerFlagOutPeripheral;
 
 pub struct Machine {
     pub peripherals: Vec<Box<dyn Peripheral>>,
@@ -23,17 +28,27 @@ impl Machine {
     pub fn set_up_peripherals(&mut self) {
         // Create the peripherals first
         let immediate_out_peripheral = ImmediateOutPeripheral {};
+        let lsh_peripheral = LeftShiftPeripheral {};
         let mem_out_peripheral = MemOutPeripheral {};
+        let mem_byte_out_peripheral = MemByteOutPeripheral {};
+        let minus_peripheral = SubPeripheral {};
         let pc_inc_peripheral = PCIncPeripheral {};
         let plus_peripheral = PlusPeripheral {};
         let reset_micro_peripheral = ResetMicroPeripheral {};
+        let zero_flag_in_peripheral = ZeroFlagInPeripheral {};
+        let zero_flag_out_peripheral = ZerFlagOutPeripheral {};
 
         // Then add them to the list of peripherals
         self.peripherals.push(Box::new(immediate_out_peripheral));
+        self.peripherals.push(Box::new(lsh_peripheral));
         self.peripherals.push(Box::new(mem_out_peripheral));
+        self.peripherals.push(Box::new(mem_byte_out_peripheral));
+        self.peripherals.push(Box::new(minus_peripheral));
         self.peripherals.push(Box::new(pc_inc_peripheral));
         self.peripherals.push(Box::new(plus_peripheral));
         self.peripherals.push(Box::new(reset_micro_peripheral));
+        self.peripherals.push(Box::new(zero_flag_in_peripheral));
+        self.peripherals.push(Box::new(zero_flag_out_peripheral));
     }
 
     pub fn simulate_clock_pulse(&mut self) {
@@ -54,6 +69,8 @@ impl Machine {
 
         // Last, add the current step
         op_code |= (self.state.micro_op_counter as u16) & 0x00_1Fu16;
+
+        println!("OP-Code: {:+#016b}", op_code);
 
         let control_indexes = self.instructions.get(&op_code);
 

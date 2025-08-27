@@ -122,7 +122,7 @@ fn main() {
         }
     }
 
-    execute!(std::io::stdout(), LeaveAlternateScreen, Hide).unwrap();
+    execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
 
 }
 

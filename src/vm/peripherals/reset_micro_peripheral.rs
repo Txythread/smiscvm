@@ -11,8 +11,6 @@ impl Peripheral for ResetMicroPeripheral {
     fn call(&self, called_name: String, state: &mut MachineState) {
         if called_name != NAME { return }
 
-        println!("Resetting micro op-counter");
-
         state.micro_op_counter = 0;
     }
 

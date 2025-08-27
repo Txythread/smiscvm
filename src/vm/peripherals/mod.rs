@@ -3,3 +3,8 @@ pub mod reset_micro_peripheral;
 pub mod pc_inc_peripheral;
 pub mod mem_out_peripheral;
 pub mod immediate_out_peripheral;
+pub mod minus_peripheral;
+pub mod mem_byte_out_peripheral;
+pub mod left_shift_peripheral;
+pub mod zero_flag_in_peripheral;
+pub mod zero_flag_out_peripheral;

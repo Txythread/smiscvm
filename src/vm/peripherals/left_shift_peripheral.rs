@@ -1,16 +1,18 @@
 use crate::vm::machine_state::MachineState;
 use crate::vm::peripheral::Peripheral;
 
-const NAME: &str = "SUB_OUT";
+const NAME: &str = "LSH_OUT";
 
 #[derive(Default)]
-pub struct SubPeripheral {}
+pub struct LeftShiftPeripheral {}
 
-impl Peripheral for SubPeripheral {
+impl Peripheral for LeftShiftPeripheral {
     fn call(&self, called_name: String, state: &mut MachineState) {
         if called_name != NAME { return }
 
-        let result = state.alu_arg_1 - state.alu_arg_2;
+        let result = state.alu_arg_1 << 1;
+
+        println!("Left shifting");
 
         state.push_to_main_bus(result as u32);
     }
