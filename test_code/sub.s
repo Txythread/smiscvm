@@ -1,4 +1,5 @@
 .section "CODE"
+!include bscmath
 main:
 	mov x2, msg@PAGE
 	adrp x1, x2
