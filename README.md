@@ -1,4 +1,4 @@
-#smiscvm - Stupid Mixed Instruction Set Computer Virtual Machine
+# smiscvm - Stupid Mixed Instruction Set Computer Virtual Machine
 
 ## Installation
 
