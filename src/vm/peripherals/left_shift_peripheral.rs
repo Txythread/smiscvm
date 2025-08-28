@@ -12,8 +12,6 @@ impl Peripheral for LeftShiftPeripheral {
 
         let result = state.alu_arg_1 << 1;
 
-        println!("Left shifting");
-
         state.push_to_main_bus(result as u32);
     }
 

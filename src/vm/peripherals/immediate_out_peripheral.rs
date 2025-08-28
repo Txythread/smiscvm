@@ -20,7 +20,7 @@ impl Peripheral for ImmediateOutPeripheral {
 
         if sign {
             // Turn the value negative
-            value =                                  value | 0xFF_FF_F0_00;
+            value =                                   value | 0xFF_FF_F0_00;
         }
 
         state.push_to_main_bus(value);

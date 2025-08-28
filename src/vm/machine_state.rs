@@ -64,7 +64,7 @@ impl MachineState {
 
 
 
-    pub fn print(&self, clk_high: bool) {
+    pub fn print(&self, clk_high: bool, main_bus_contents: u32) {
         execute!(
             stdout(),
             cursor::MoveTo(0, 0)
@@ -86,7 +86,7 @@ impl MachineState {
 
         println!("\n");
         println!("Current:");
-        println!("CLK: ({}), Step: {:#04X}, øIPC: N/A, mBus: {:#010X}", if clk_high { "*" } else { " "}, self.micro_op_counter, self.main_bus);
+        println!("CLK: ({}), Step: {:#04X}, øIPC: N/A, mBus: {:#010X}", if clk_high { "*" } else { " "}, self.micro_op_counter, main_bus_contents);
 
 
 

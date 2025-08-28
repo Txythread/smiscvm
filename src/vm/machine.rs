@@ -51,7 +51,8 @@ impl Machine {
         self.peripherals.push(Box::new(zero_flag_out_peripheral));
     }
 
-    pub fn simulate_clock_pulse(&mut self) {
+    /// Simulates pulling the clock high and then low again; outputs the main bus' contents during the "high phase" of the clock
+    pub fn simulate_clock_pulse(&mut self) -> u32{
         // Generate the OP-Code
         // First, get the instruction
         // Result: 0x3F_C0
@@ -70,17 +71,20 @@ impl Machine {
         // Last, add the current step
         op_code |= (self.state.micro_op_counter as u16) & 0x00_1Fu16;
 
-        println!("OP-Code: {:+#016b}", op_code);
+        println!("OP-Code: {:#016b}", op_code);
 
         let control_indexes = self.instructions.get(&op_code);
 
-        if control_indexes.is_none() { return }
+        if control_indexes.is_none() { return 0 }
 
         self.execute_control_indexes(control_indexes.unwrap().clone(), cal_reg_a, cal_reg_b, immediate_value);
 
+        let main_bus_contents_during_high = self.state.main_bus;
         // End of clock pulse - end of outputs
         self.state.main_bus = 0;
         self.state.micro_op_counter += 1;
+
+        main_bus_contents_during_high as u32
     }
 
     pub fn execute_control_indexes(&mut self, indexes: Vec<u8>, first_called_reg: u8, second_called_reg: u8, immediate_value: i32) {

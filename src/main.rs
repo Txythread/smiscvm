@@ -103,15 +103,15 @@ fn main() {
 
     execute!(std::io::stdout(), Hide).unwrap();
     loop {
-        machine.simulate_clock_pulse();
+        machine.state.print(false, 0);
 
-        machine.state.print(false);
+        let main_bus_contents = machine.simulate_clock_pulse();
 
         if let Some(hertz) = args.hertz {
             sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
         }
 
-        machine.state.print(true);
+        machine.state.print(true, main_bus_contents);
 
         if let Some(hertz) = args.hertz {
             sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));

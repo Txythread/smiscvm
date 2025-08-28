@@ -15,7 +15,7 @@ First, assemble your code as documented in smiscasm's documentation. Then, invok
 
 ## TUI
 `smiscvm` shows information about the state of the machine while running. It first displays all regular registers (0-31), the memory address register (*"ma"*), the current instruction register (*"in"*) and the program counter (*"pc"*).  
-It then shows the flags (zero flag (*"ZF"*) and privilegded mode (*"PM"*) and the ALU's resgisters. This is then followed by the clock (up or down), the micro-op-counter (*"Step"*), and more data, though this is currently not working. Additional stdout messages from the program are displayed below all of the previously mentioned information.
+It then shows the flags (zero flag (*"ZF"*) and privilegded mode (*"PM"*) and the ALU's resgisters. This is then followed by the clock (up or down), the micro-op-counter (*"Step"*), the average IPC (though this is currently not working) and the contents of the main bus. Additional stdout messages from the program are displayed below all of the previously mentioned information.
 
 ## Simulation speed
 The (theoretical max.) clock speed can be set using the `-hz` (or `--hertz`) flag.
