@@ -2,14 +2,15 @@ use std::env;
 use std::fmt::{Debug, Formatter};
 use std::process::exit;
 use std::thread::sleep;
+use std::time::Duration;
 use std::fs;
 use std::path::PathBuf;
-use std::time::Duration;
 use colorize;
 use colorize::AnsiColor;
 use crossterm::execute;
 use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::cursor::{Hide, Show};
+use ctrlc;
 use crate::vm::machine::Machine;
 use crate::help::help::print_help;
 
@@ -99,9 +100,18 @@ fn main() {
     // Set the instruction to 'add x0, 0', which should do nothing but load the next instruction in practice.
     machine.state.current_instruction = 0x50_00_00_00;
 
-    execute!(std::io::stdout(), EnterAlternateScreen).unwrap();
+    // Enter the alternate screen so the original screen contents won't be lost
+    // P.S: the same for the cursor with Hide/Show
+    execute!(std::io::stdout(), EnterAlternateScreen, Hide).unwrap();
 
-    execute!(std::io::stdout(), Hide).unwrap();
+    // Change Ctrl+C behaviour to return to the original screen before exiting
+    ctrlc::set_handler(move || {
+        execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
+        exit(0);
+    })
+        .expect("Error setting Ctrl-C handler");
+
+
     loop {
         machine.state.print(false, 0);
 

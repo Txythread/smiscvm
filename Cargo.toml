@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 colorize = "0.1.0"
 crossterm = "0.29.0"
+ctrlc = "3.4.7"
 include_dir = "0.7.4"
 rand = "0.9.0"
 termimad = "0.33.0"
