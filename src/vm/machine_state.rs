@@ -33,6 +33,10 @@ pub struct MachineState {
     // Standard Output
     pub std_transmitter_contents: u8,
     pub stdout: String,
+
+    // Information stored for pure interest
+    pub completed_clock_cycles: usize,
+    pub completed_instructions: usize,
 }
 
 #[derive(Clone, Copy)]
@@ -42,7 +46,7 @@ pub struct ScreenPrintingInfo {
 
 impl MachineState {
     pub fn new() -> MachineState {
-        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string() }
+        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string(), completed_clock_cycles: 0, completed_instructions: 0 }
     }
 
 
@@ -101,9 +105,14 @@ impl MachineState {
         println!("\n");
         println!("ZF: {}, PM: {}, ALU: ({:#010X}, {:#010X})", if self.flag1 { "1" } else { "0" }, if self.flag2 { "1" } else { "0" }, self.alu_arg_1, self.alu_arg_2);
 
+
+        let mut ipc = "N/A".to_string(); // Initialize with default value
+        if self.completed_instructions != 0 {
+            ipc = (self.completed_instructions as f32 / self.completed_clock_cycles as f32).to_string();
+        }
         println!("\n");
         println!("Current:");
-        println!("CLK: ({}), Step: {:#04X}, øIPC: N/A, mBus: {:#010X}", if clk_high { "*" } else { " "}, self.micro_op_counter, main_bus_contents);
+        println!("CLK: ({}), Step: {:#04X}, øIPC: {:.5}, mBus: {:#010X}", /* Clock: */ if clk_high { "*" } else { " "}, /* Step: */ self.micro_op_counter, /* øIPC: */ ipc, /* mBus: */main_bus_contents);
 
         println!("Standard Output (3 lines):\n");
         let standard_output_lines: Vec<_> = self.stdout.lines().collect();

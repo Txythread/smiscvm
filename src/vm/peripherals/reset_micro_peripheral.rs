@@ -12,6 +12,9 @@ impl Peripheral for ResetMicroPeripheral {
         if called_name != NAME { return }
 
         state.micro_op_counter = 0;
+
+        // Update the amount of executed instructions
+        state.completed_instructions += 1;
     }
 
     fn late_call(&self, _: String, _: &mut MachineState) { /* pass */ }

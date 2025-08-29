@@ -77,8 +77,6 @@ impl Machine {
         // Last, add the current step
         op_code |= (self.state.micro_op_counter as u16) & 0x00_1Fu16;
 
-        println!("OP-Code: {:#016b}", op_code);
-
         let control_indexes = self.instructions.get(&op_code);
 
         if control_indexes.is_none() { return 0 }
@@ -89,6 +87,10 @@ impl Machine {
         // End of clock pulse - end of outputs
         self.state.main_bus = 0;
         self.state.micro_op_counter += 1;
+
+        // Increment amount of clock pulses
+        self.state.completed_clock_cycles += 1;
+
 
         main_bus_contents_during_high as u32
     }
