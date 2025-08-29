@@ -37,6 +37,10 @@ pub struct MachineState {
     // Information stored for pure interest
     pub completed_clock_cycles: usize,
     pub completed_instructions: usize,
+
+    // Information specific to the virtual machine,
+    // but is not for pure interest variables
+    pub halted: bool,
 }
 
 #[derive(Clone, Copy)]
@@ -46,7 +50,7 @@ pub struct ScreenPrintingInfo {
 
 impl MachineState {
     pub fn new() -> MachineState {
-        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string(), completed_clock_cycles: 0, completed_instructions: 0 }
+        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string(), completed_clock_cycles: 0, completed_instructions: 0, halted: false }
     }
 
 

@@ -59,6 +59,8 @@ impl Machine {
 
     /// Simulates pulling the clock high and then low again; outputs the main bus' contents during the "high phase" of the clock
     pub fn simulate_clock_pulse(&mut self) -> u32{
+        if self.state.halted { return 0; }
+
         // Generate the OP-Code
         // First, get the instruction
         // Result: 0x3F_C0
