@@ -12,6 +12,7 @@ use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::cursor::{Hide, Show};
 use ctrlc;
 use crate::vm::machine::Machine;
+use crate::vm::machine_state::ScreenPrintingInfo;
 use crate::help::help::print_help;
 
 mod instruction;
@@ -112,8 +113,12 @@ fn main() {
         .expect("Error setting Ctrl-C handler");
 
 
+    // The screen printing info required to print by machine.state.print()
+    // This is for detecting when an entire redraw is required
+    let mut screen_info: Option<ScreenPrintingInfo> = None;
+
     loop {
-        machine.state.print(false, 0);
+        machine.state.print(false, 0, &mut screen_info);
 
         let main_bus_contents = machine.simulate_clock_pulse();
 
@@ -121,7 +126,7 @@ fn main() {
             sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
         }
 
-        machine.state.print(true, main_bus_contents);
+        machine.state.print(true, main_bus_contents, &mut screen_info);
 
         if let Some(hertz) = args.hertz {
             sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));

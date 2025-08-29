@@ -2,7 +2,7 @@ use std::process::exit;
 use std::io;
 use std::io::{stdout, Write};
 use colorize::AnsiColor;
-use crossterm::terminal::{ size };
+use crossterm::terminal::{size, Clear, ClearType};
 use crossterm::cursor::{ position };
 use crossterm::{cursor, execute};
 
@@ -33,6 +33,11 @@ pub struct MachineState {
     // Standard Output
     pub std_transmitter_contents: u8,
     pub stdout: String,
+}
+
+#[derive(Clone, Copy)]
+pub struct ScreenPrintingInfo {
+    pub size: (u16, u16),
 }
 
 impl MachineState {
@@ -68,7 +73,15 @@ impl MachineState {
 
 
 
-    pub fn print(&self, clk_high: bool, main_bus_contents: u32) {
+    /// Prints information about the machine to stdout. Redraws entire screen if needed. Always pass the same screen printing info.
+    pub fn print(&self, clk_high: bool, main_bus_contents: u32, screen_info: &mut Option<ScreenPrintingInfo>) {
+        // Redraw screen if needed (when no previous print by this function occurred (no screen printing info) or terminal size changed)
+        let current_screen_size = size().unwrap();
+        if screen_info.is_none() || screen_info.clone().unwrap().size != current_screen_size {
+            _ = execute!(stdout(), Clear(ClearType::All));
+        }
+
+
         execute!(
             stdout(),
             cursor::MoveTo(0, 0)
@@ -97,10 +110,10 @@ impl MachineState {
         let lines_count = standard_output_lines.clone().len();
         let last_3_lines = &standard_output_lines[lines_count - 3 .. lines_count];
         println!("{}", last_3_lines.join("\n"));
-        println!("--------- smiscvm - stdout ---------")
+        println!("--------- smiscvm - stdout ---------");
 
 
-
+        *screen_info = Some(ScreenPrintingInfo { size: size().unwrap() }).clone();
     }
 
     fn print_register(name: String, contents: u32){
