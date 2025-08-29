@@ -134,6 +134,7 @@ impl Machine {
             "CAL_REG_B_OUT" => self.cal_reg_out(cal_reg_b),
             "IMMEDIATE_OUT" => self.immediate_value_out(immediate_value),
             "PC_OUT" => self.state.push_to_main_bus(self.state.program_counter),
+            "SP_OUT" => self.state.push_to_main_bus(self.state.registers[31] as u32),
             _ => {}
         }
     }
@@ -145,6 +146,7 @@ impl Machine {
             "CAL_REG_B_IN" => self.cal_reg_in(cal_reg_b),
             "ALU_IN_A" => self.alu_a_in(),
             "ALU_IN_B" => self.alu_b_in(),
+            "SP_IN" => self.state.push_to_main_bus(self.state.registers[31] as u32),
             "PC_IN" => self.state.program_counter = self.state.main_bus as u32,
             "INSTR_IN" => self.state.current_instruction = self.state.main_bus as u32,
             "MEM_ADDR_PTR_IN" => self.state.memory_address_ptr = self.state.main_bus,
