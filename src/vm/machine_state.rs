@@ -29,11 +29,15 @@ pub struct MachineState {
 
     // Memory
     pub memory: [u8; MEMORY_SIZE],
+    
+    // Standard Output
+    pub std_transmitter_contents: u8,
+    pub stdout: String,
 }
 
 impl MachineState {
     pub fn new() -> MachineState {
-        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE] }
+        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string() }
     }
 
 
@@ -87,6 +91,13 @@ impl MachineState {
         println!("\n");
         println!("Current:");
         println!("CLK: ({}), Step: {:#04X}, øIPC: N/A, mBus: {:#010X}", if clk_high { "*" } else { " "}, self.micro_op_counter, main_bus_contents);
+
+        println!("Standard Output (3 lines):\n");
+        let standard_output_lines: Vec<_> = self.stdout.lines().collect();
+        let lines_count = standard_output_lines.clone().len();
+        let last_3_lines = &standard_output_lines[lines_count - 3 .. lines_count];
+        println!("{}", last_3_lines.join("\n"));
+        println!("--------- smiscvm - stdout ---------")
 
 
 

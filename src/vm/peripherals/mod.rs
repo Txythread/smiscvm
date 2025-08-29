@@ -8,3 +8,5 @@ pub mod mem_byte_out_peripheral;
 pub mod left_shift_peripheral;
 pub mod zero_flag_in_peripheral;
 pub mod zero_flag_out_peripheral;
+pub mod std_trans_in_peripheral;
+pub mod std_trans_send_peripheral;

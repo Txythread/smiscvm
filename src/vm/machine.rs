@@ -11,6 +11,8 @@ use crate::vm::peripherals::minus_peripheral::SubPeripheral;
 use crate::vm::peripherals::pc_inc_peripheral::PCIncPeripheral;
 use crate::vm::peripherals::plus_peripheral::PlusPeripheral;
 use crate::vm::peripherals::reset_micro_peripheral::ResetMicroPeripheral;
+use crate::vm::peripherals::std_trans_in_peripheral::StandardOutputTransmitterInPeripheral;
+use crate::vm::peripherals::std_trans_send_peripheral::StandardOutputTransmitterSendPeripheral;
 use crate::vm::peripherals::zero_flag_in_peripheral::ZeroFlagInPeripheral;
 use crate::vm::peripherals::zero_flag_out_peripheral::ZerFlagOutPeripheral;
 
@@ -35,6 +37,8 @@ impl Machine {
         let pc_inc_peripheral = PCIncPeripheral {};
         let plus_peripheral = PlusPeripheral {};
         let reset_micro_peripheral = ResetMicroPeripheral {};
+        let stdtrans_in_peripheral = StandardOutputTransmitterInPeripheral {};
+        let stdtrans_send_peripheral = StandardOutputTransmitterSendPeripheral {};
         let zero_flag_in_peripheral = ZeroFlagInPeripheral {};
         let zero_flag_out_peripheral = ZerFlagOutPeripheral {};
 
@@ -47,6 +51,8 @@ impl Machine {
         self.peripherals.push(Box::new(pc_inc_peripheral));
         self.peripherals.push(Box::new(plus_peripheral));
         self.peripherals.push(Box::new(reset_micro_peripheral));
+        self.peripherals.push(Box::new(stdtrans_in_peripheral));
+        self.peripherals.push(Box::new(stdtrans_send_peripheral));
         self.peripherals.push(Box::new(zero_flag_in_peripheral));
         self.peripherals.push(Box::new(zero_flag_out_peripheral));
     }
