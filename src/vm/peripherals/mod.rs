@@ -10,3 +10,5 @@ pub mod zero_flag_in_peripheral;
 pub mod zero_flag_out_peripheral;
 pub mod std_trans_in_peripheral;
 pub mod std_trans_send_peripheral;
+pub mod mem_in_peripheral;
+pub mod stack_pointer_dec_doubleword_peripheral;

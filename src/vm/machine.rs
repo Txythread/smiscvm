@@ -6,11 +6,13 @@ use crate::vm::peripheral::Peripheral;
 use crate::vm::peripherals::immediate_out_peripheral::ImmediateOutPeripheral;
 use crate::vm::peripherals::left_shift_peripheral::LeftShiftPeripheral;
 use crate::vm::peripherals::mem_byte_out_peripheral::MemByteOutPeripheral;
+use crate::vm::peripherals::mem_in_peripheral::MemInPeripheral;
 use crate::vm::peripherals::mem_out_peripheral::MemOutPeripheral;
 use crate::vm::peripherals::minus_peripheral::SubPeripheral;
 use crate::vm::peripherals::pc_inc_peripheral::PCIncPeripheral;
 use crate::vm::peripherals::plus_peripheral::PlusPeripheral;
 use crate::vm::peripherals::reset_micro_peripheral::ResetMicroPeripheral;
+use crate::vm::peripherals::stack_pointer_dec_doubleword_peripheral::StackPointerIncrementDoubleWordPeripheral;
 use crate::vm::peripherals::std_trans_in_peripheral::StandardOutputTransmitterInPeripheral;
 use crate::vm::peripherals::std_trans_send_peripheral::StandardOutputTransmitterSendPeripheral;
 use crate::vm::peripherals::zero_flag_in_peripheral::ZeroFlagInPeripheral;
@@ -31,12 +33,14 @@ impl Machine {
         // Create the peripherals first
         let immediate_out_peripheral = ImmediateOutPeripheral {};
         let lsh_peripheral = LeftShiftPeripheral {};
+        let mem_in_peripheral = MemInPeripheral {};
         let mem_out_peripheral = MemOutPeripheral {};
         let mem_byte_out_peripheral = MemByteOutPeripheral {};
         let minus_peripheral = SubPeripheral {};
         let pc_inc_peripheral = PCIncPeripheral {};
         let plus_peripheral = PlusPeripheral {};
         let reset_micro_peripheral = ResetMicroPeripheral {};
+        let stack_pointer_dec_double_word_peripheral = StackPointerIncrementDoubleWordPeripheral {};
         let stdtrans_in_peripheral = StandardOutputTransmitterInPeripheral {};
         let stdtrans_send_peripheral = StandardOutputTransmitterSendPeripheral {};
         let zero_flag_in_peripheral = ZeroFlagInPeripheral {};
@@ -45,12 +49,14 @@ impl Machine {
         // Then add them to the list of peripherals
         self.peripherals.push(Box::new(immediate_out_peripheral));
         self.peripherals.push(Box::new(lsh_peripheral));
+        self.peripherals.push(Box::new(mem_in_peripheral));
         self.peripherals.push(Box::new(mem_out_peripheral));
         self.peripherals.push(Box::new(mem_byte_out_peripheral));
         self.peripherals.push(Box::new(minus_peripheral));
         self.peripherals.push(Box::new(pc_inc_peripheral));
         self.peripherals.push(Box::new(plus_peripheral));
         self.peripherals.push(Box::new(reset_micro_peripheral));
+        self.peripherals.push(Box::new(stack_pointer_dec_double_word_peripheral));
         self.peripherals.push(Box::new(stdtrans_in_peripheral));
         self.peripherals.push(Box::new(stdtrans_send_peripheral));
         self.peripherals.push(Box::new(zero_flag_in_peripheral));
