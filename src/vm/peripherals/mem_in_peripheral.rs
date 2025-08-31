@@ -13,10 +13,13 @@ impl Peripheral for MemInPeripheral {
 
         let address = state.memory_address_ptr;
 
-        state.memory[address as usize + 0] = ((state.main_bus as u32 & 0xFF_00_00_00) > 24) as u8;
-        state.memory[address as usize + 1] = ((state.main_bus & 0x00_FF_00_00) > 16) as u8;
-        state.memory[address as usize + 2] = ((state.main_bus & 0x00_00_FF_00) > 8) as u8;
-        state.memory[address as usize + 3] = ((state.main_bus & 0x00_00_00_FF) > 0) as u8;
+
+        println!("Storing {:#010X} at {:010X}", state.main_bus, address);
+
+        state.memory[address as usize + 3] = ((state.main_bus as u32 & 0xFF_00_00_00) > 24) as u8;
+        state.memory[address as usize + 2] = ((state.main_bus & 0x00_FF_00_00) > 16) as u8;
+        state.memory[address as usize + 1] = ((state.main_bus & 0x00_00_FF_00) > 8) as u8;
+        state.memory[address as usize + 0] = ((state.main_bus & 0x00_00_00_FF) > 0) as u8;
 
     }
 

@@ -1,5 +1,6 @@
 .section "CODE"
 main:
+	add x10, 1
 	adrp sp, stack-end@PAGE
 	sub sp, 4 # go back to leave space for an entire quad word
 	adrp x3, function@PAGE
@@ -9,8 +10,8 @@ main:
 	hlt
 	
 function:
-	mov x0, 1
-	hlt
+	add x0, 1
+	ret
 
 .section "DATA"
 
