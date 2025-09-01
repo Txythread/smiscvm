@@ -76,6 +76,7 @@ fn main() {
         exit(100);
     }
 
+
     let input_file = input_file.unwrap();
 
     // Check the file is in the same dir
@@ -229,6 +230,13 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
 
             // Isn't yet written, so add the file name
             result.file = Some(arg);
+
+            // Make sure the file name is valid
+            if !result.file.clone().unwrap().ends_with(".o") {
+                let error = format!("Expected input file with \".o\" suffix, but \"{}\" was found.", result.file.clone().unwrap()).red().to_string();
+                eprintln!("{}", error);
+                exit(100);
+            }
         }
     }
 
