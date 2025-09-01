@@ -31,10 +31,6 @@ pub fn exit_with_variant(message: String, exit_code: ExitCode, variant: u8) {
 
 pub enum ExitCode {
     BadArgument,                // A CLI argument is not as expected
-    BadImplicitInputFile,       // Config file malfunctioning, probably instruction-gen or smth
-    ReadWriteError,             // Can't read from or write to the disk. Storage full? Permissions?
-    BadCode,                    // The binary has got some issues
-    Other,                      // Miscellaneous error
     Internal                    // Internal malfunction with no further explanation
 }
 
@@ -42,10 +38,6 @@ impl ExitCode {
     pub fn get_code(&self) -> u8 {
         match self {
             ExitCode::BadArgument => 0, // This will be formated as x00 where x is non-zero
-            ExitCode::BadImplicitInputFile => 3,
-            ExitCode::ReadWriteError => 4,
-            ExitCode::BadCode => 5,
-            ExitCode::Other => 98,
             ExitCode::Internal => 99,
         }
     }

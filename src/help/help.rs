@@ -1,7 +1,6 @@
 // Termimad is for Markdown formatting in the terminal.
 use termimad;
 use include_dir::{include_dir, Dir};
-use termimad::crossterm::style::Stylize;
 use crate::ArgumentList;
 use crate::util::exit::{ exit, ExitCode };
 

@@ -4,8 +4,6 @@ use std::thread::sleep;
 use std::time::Duration;
 use std::fs;
 use std::path::PathBuf;
-use colorize;
-use colorize::AnsiColor;
 use crossterm::execute;
 use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::cursor::{Hide, Show};

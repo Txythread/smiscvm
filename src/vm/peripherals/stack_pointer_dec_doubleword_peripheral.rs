@@ -13,6 +13,6 @@ impl Peripheral for StackPointerDecrementDoubleWordPeripheral {
         // Decrement the stack pointer (register #31) by 4 bytes (one quadruple word).
         state.registers[31] -= 4;
     }
-    fn late_call(&self, called_name: String, state: &mut MachineState) { /* pass */ }
+    fn late_call(&self, _: String, _: &mut MachineState) { /* pass */ }
 
 }
