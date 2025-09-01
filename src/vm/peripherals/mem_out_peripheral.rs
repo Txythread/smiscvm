@@ -21,8 +21,6 @@ impl Peripheral for MemOutPeripheral {
         let data: u32 = ((data1 as u32) << 24) | ((data2 as u32) << 16) | ((data3 as u32) << 8) | data4 as u32;
 
         state.push_to_main_bus(data);
-
-        println!("Retrieve {:#010X} at {:010X}", data, address);
     }
 
     fn late_call(&self, _: String, _: &mut MachineState) { /* pass */ }
