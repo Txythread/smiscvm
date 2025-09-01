@@ -1,10 +1,10 @@
-use std::process::exit;
 use std::io;
 use std::io::{stdout, Write};
 use colorize::AnsiColor;
 use crossterm::terminal::{size, Clear, ClearType};
 use crossterm::cursor::{ position };
 use crossterm::{cursor, execute};
+use crate::util::exit::{ exit, ExitCode };
 
 pub const MEMORY_PAGE_SIZE: usize = 4096;
 pub const MEMORY_SIZE: usize = MEMORY_PAGE_SIZE * 16; // The sixteen pages are chosen randomly, but that'd be 64kiB or 65536 bytes (if I remember correctly)
@@ -66,9 +66,7 @@ impl MachineState {
     /// Put an array of bytes into memory at an offset
     pub fn push_to_memory(&mut self, data: Vec<u8>, start_address: usize) {
         if start_address + data.len() > MEMORY_SIZE {
-            let msg = format!("Can't append vector of length {} into memory at {}. The position of some bytes exceeds the memory size ({}B).", data.len(), start_address, MEMORY_SIZE).red();
-            eprintln!("{}", msg);
-            exit(199);
+            exit(format!("Can't append vector of length {} into memory at {}. The position of some bytes exceeds the memory size ({}B).", data.len(), start_address, MEMORY_SIZE), ExitCode::Internal);
         }
 
         for i in data.iter().enumerate() {

@@ -1,6 +1,5 @@
 use std::env;
 use std::fmt::{Debug, Formatter};
-use std::process::exit;
 use std::thread::sleep;
 use std::time::Duration;
 use std::fs;
@@ -14,10 +13,12 @@ use ctrlc;
 use crate::vm::machine::Machine;
 use crate::vm::machine_state::ScreenPrintingInfo;
 use crate::help::help::print_help;
+use crate::util::exit::{exit, ExitCode};
 
 mod instruction;
 mod vm;
 mod help;
+mod util;
 
 
 pub struct ArgumentList{
@@ -71,9 +72,7 @@ fn main() {
 
 
     if input_file.is_err() {
-        let msg = format!("Input file not found: {}", path.to_str().unwrap().to_string()).red().to_string();
-        eprintln!("{}", msg);
-        exit(100);
+        exit(format!("Input file not found: {}", path.to_str().unwrap().to_string()), ExitCode::BadArgument);
     }
 
 
@@ -85,9 +84,7 @@ fn main() {
     let amount_of_subdirs = path.to_str().unwrap().split('/').count() - 1;
 
     if amount_of_subdirs > 0 {
-        let msg = format!("Input file must be directly beneath the working directory, but there are {} directories in between.", amount_of_subdirs).red().to_string();
-        eprintln!("{}", msg);
-        exit(100);
+        exit(format!("Input file must be directly beneath the working directory, but there are {} directories in between.", amount_of_subdirs), ExitCode::BadArgument);
     }
 
 
@@ -109,7 +106,7 @@ fn main() {
     // Change Ctrl+C behaviour to return to the original screen before exiting
     ctrlc::set_handler(move || {
         execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
-        exit(0);
+        std::process::exit(0);
     })
         .expect("Error setting Ctrl-C handler");
 
@@ -185,16 +182,12 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
                         if let Some(value) = value.parse::<u16>().ok() {
                             result.hertz = Some(value);
                         }else{
-                            let msg = format!("Positive integer (lower than 2^16) expected as a value for hertz, but {} was found.", value).red();
-                            eprintln!("{}", msg);
-                            exit(100);
+                            exit(format!("Positive integer (lower than 2^16) expected as a value for hertz, but {} was found.", value), ExitCode::BadArgument);
                         }
                     }
 
                     _=>{
-                        let error = format!("Unknown flag {}.", flag).red().to_string();
-                        eprintln!("{}", error);
-                        exit(100)
+                        exit(format!("Unknown flag {}.", flag), ExitCode::BadArgument);
                     }
                 }
 
@@ -223,9 +216,7 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
             // The argument is not a flag, nor is it used after a flag, ...
             // ... so it has to be the name of the file
             if result.file.is_some(){
-                let error = format!("\"{}\" and \"{:?}\" can't both be input files.", result.file.clone().unwrap(), arg).red().to_string();
-                eprintln!("{}", error);
-                exit(100);
+                exit(format!("\"{}\" and \"{:?}\" can't both be input files.", result.file.clone().unwrap(), arg), ExitCode::BadArgument);
             }
 
             // Isn't yet written, so add the file name
@@ -233,17 +224,13 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
 
             // Make sure the file name is valid
             if !result.file.clone().unwrap().ends_with(".o") {
-                let error = format!("Expected input file with \".o\" suffix, but \"{}\" was found.", result.file.clone().unwrap()).red().to_string();
-                eprintln!("{}", error);
-                exit(100);
+                exit(format!("Expected input file with \".o\" suffix, but \"{}\" was found.", result.file.clone().unwrap()), ExitCode::BadArgument);
             }
         }
     }
 
     if current_flag.is_some() && !result.help {
-        let error = "All flags that act like parameters must have their second part provided.".red().to_string();
-        eprintln!("{}", error);
-        exit(100);
+        exit("All flags that act like parameters must have their second part provided.".to_string(), ExitCode::BadArgument);
     }
 
     if current_flag.is_some() {
@@ -254,17 +241,13 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
             }
 
             _=>{
-                let error = format!("Unknown flag {}.", current_flag.unwrap()).red().to_string();
-                eprintln!("{}", error);
-                exit(100)
+                exit(format!("Unknown flag {}.", current_flag.unwrap()), ExitCode::BadArgument);
             }
         }
     }
 
     if result.needs_input_file(){
-        let error = "No input files provided.".red().to_string();
-        eprintln!("{}", error);
-        exit(100);
+        exit("No input files provided.".to_string(), ExitCode::BadArgument);
     }
 
     result
