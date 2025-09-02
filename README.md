@@ -1,4 +1,6 @@
 # smiscvm - Stupid Mixed Instruction Set Computer Virtual Machine
+A VM whose inner workings mimic the inner workings of a CPU.
+
 
 ## Installation
 
