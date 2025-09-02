@@ -13,3 +13,4 @@ pub mod std_trans_send_peripheral;
 pub mod mem_in_peripheral;
 pub mod stack_pointer_dec_doubleword_peripheral;
 pub mod stack_pointer_inc_doubleword_peripheral;
+pub mod pc_in_peripheral;

@@ -9,6 +9,7 @@ use crate::vm::peripherals::mem_byte_out_peripheral::MemByteOutPeripheral;
 use crate::vm::peripherals::mem_in_peripheral::MemInPeripheral;
 use crate::vm::peripherals::mem_out_peripheral::MemOutPeripheral;
 use crate::vm::peripherals::minus_peripheral::SubPeripheral;
+use crate::vm::peripherals::pc_in_peripheral::ProgramCounterInputEnablePeripheral;
 use crate::vm::peripherals::pc_inc_peripheral::PCIncPeripheral;
 use crate::vm::peripherals::plus_peripheral::PlusPeripheral;
 use crate::vm::peripherals::reset_micro_peripheral::ResetMicroPeripheral;
@@ -38,6 +39,7 @@ impl Machine {
         let mem_out_peripheral = MemOutPeripheral {};
         let mem_byte_out_peripheral = MemByteOutPeripheral {};
         let minus_peripheral = SubPeripheral {};
+        let pc_in_peripheral = ProgramCounterInputEnablePeripheral {};
         let pc_inc_peripheral = PCIncPeripheral {};
         let plus_peripheral = PlusPeripheral {};
         let reset_micro_peripheral = ResetMicroPeripheral {};
@@ -55,6 +57,7 @@ impl Machine {
         self.peripherals.push(Box::new(mem_out_peripheral));
         self.peripherals.push(Box::new(mem_byte_out_peripheral));
         self.peripherals.push(Box::new(minus_peripheral));
+        self.peripherals.push(Box::new(pc_in_peripheral));
         self.peripherals.push(Box::new(pc_inc_peripheral));
         self.peripherals.push(Box::new(plus_peripheral));
         self.peripherals.push(Box::new(reset_micro_peripheral));
@@ -156,7 +159,6 @@ impl Machine {
             "ALU_IN_A" => self.alu_a_in(),
             "ALU_IN_B" => self.alu_b_in(),
             "SP_IN" => self.state.push_to_main_bus(self.state.registers[31] as u32),
-            "PC_IN" => self.state.program_counter = self.state.main_bus as u32,
             "INSTR_IN" => self.state.current_instruction = self.state.main_bus as u32,
             "MEM_ADDR_PTR_IN" => self.state.memory_address_ptr = self.state.main_bus,
             _ => {}
