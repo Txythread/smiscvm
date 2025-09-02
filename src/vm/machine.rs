@@ -6,6 +6,7 @@ use crate::vm::peripheral::Peripheral;
 use crate::vm::peripherals::immediate_out_peripheral::ImmediateOutPeripheral;
 use crate::vm::peripherals::left_shift_peripheral::LeftShiftPeripheral;
 use crate::vm::peripherals::mem_byte_out_peripheral::MemByteOutPeripheral;
+use crate::vm::peripherals::mem_byte_in_peripheral::MemByteInPeripheral;
 use crate::vm::peripherals::mem_in_peripheral::MemInPeripheral;
 use crate::vm::peripherals::mem_out_peripheral::MemOutPeripheral;
 use crate::vm::peripherals::minus_peripheral::SubPeripheral;
@@ -37,6 +38,7 @@ impl Machine {
         let lsh_peripheral = LeftShiftPeripheral {};
         let mem_in_peripheral = MemInPeripheral {};
         let mem_out_peripheral = MemOutPeripheral {};
+        let mem_byte_in_peripheral = MemByteInPeripheral {};
         let mem_byte_out_peripheral = MemByteOutPeripheral {};
         let minus_peripheral = SubPeripheral {};
         let pc_in_peripheral = ProgramCounterInputEnablePeripheral {};
@@ -53,6 +55,7 @@ impl Machine {
         // Then add them to the list of peripherals
         self.peripherals.push(Box::new(immediate_out_peripheral));
         self.peripherals.push(Box::new(lsh_peripheral));
+        self.peripherals.push(Box::new(mem_byte_in_peripheral));
         self.peripherals.push(Box::new(mem_in_peripheral));
         self.peripherals.push(Box::new(mem_out_peripheral));
         self.peripherals.push(Box::new(mem_byte_out_peripheral));
