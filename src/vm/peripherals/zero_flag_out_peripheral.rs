@@ -4,9 +4,9 @@ use crate::vm::peripheral::Peripheral;
 const NAME: &str = "ZF_OUT";
 
 #[derive(Default)]
-pub struct ZerFlagOutPeripheral {}
+pub struct ZeroFlagOutPeripheral {}
 
-impl Peripheral for ZerFlagOutPeripheral {
+impl Peripheral for ZeroFlagOutPeripheral {
     fn call(&self, called_name: String, state: &mut MachineState) {
         if called_name != NAME { return }
 

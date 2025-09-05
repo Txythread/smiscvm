@@ -19,7 +19,7 @@ use crate::vm::peripherals::stack_pointer_inc_doubleword_peripheral::StackPointe
 use crate::vm::peripherals::std_trans_in_peripheral::StandardOutputTransmitterInPeripheral;
 use crate::vm::peripherals::std_trans_send_peripheral::StandardOutputTransmitterSendPeripheral;
 use crate::vm::peripherals::zero_flag_in_peripheral::ZeroFlagInPeripheral;
-use crate::vm::peripherals::zero_flag_out_peripheral::ZerFlagOutPeripheral;
+use crate::vm::peripherals::zero_flag_out_peripheral::ZeroFlagOutPeripheral;
 
 pub struct Machine {
     pub peripherals: Vec<Box<dyn Peripheral>>,
@@ -50,7 +50,7 @@ impl Machine {
         let stdtrans_in_peripheral = StandardOutputTransmitterInPeripheral {};
         let stdtrans_send_peripheral = StandardOutputTransmitterSendPeripheral {};
         let zero_flag_in_peripheral = ZeroFlagInPeripheral {};
-        let zero_flag_out_peripheral = ZerFlagOutPeripheral {};
+        let zero_flag_out_peripheral = ZeroFlagOutPeripheral {};
 
         // Then add them to the list of peripherals
         self.peripherals.push(Box::new(immediate_out_peripheral));
