@@ -1,3 +1,5 @@
+// This is used in tests only, so there'll be a warning on normal builds without the attribute in the next line
+#[allow(dead_code)]
 const PROGRAM: &'static [u8] = include_bytes!("../../../test_code/general-test/test.o");
 
 #[cfg(test)]
