@@ -127,10 +127,6 @@ fn main() {
         if let Some(hertz) = args.hertz {
             sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
         }
-
-        if machine.state.current_instruction == 0 && machine.state.program_counter != 0{
-            break;
-        }
     }
 
     execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
