@@ -19,15 +19,17 @@ mod help;
 mod util;
 
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct ArgumentList{
     pub file: Option<String>,
     pub help: bool,                             // -h or --help
-    pub hertz: Option<u16>,                   // -hz or --hertz
+    pub hertz: Option<u16>,                     // -hz or --hertz
+    pub legacy_encoding: bool,                  // --legacy-encoding
 }
 
 impl ArgumentList{
     pub fn new() -> ArgumentList{
-        ArgumentList{file: None, help: false, hertz: None}
+        ArgumentList{file: None, help: false, hertz: None, legacy_encoding: false}
     }
 
     /// Checks whether the current amount of data is enough (0) or the file name is missing (1)
@@ -36,24 +38,6 @@ impl ArgumentList{
         !is_ok
     }
 }
-
-impl Debug for ArgumentList{
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("ArgumentList")
-            .field("file", &self.file)
-            .field("help", &self.help)
-            .field("hertz", &self.hertz)
-            .finish()
-    }
-}
-
-
-impl PartialEq for ArgumentList{
-    fn eq(&self, other: &Self) -> bool{
-        self.file == other.file && self.help == other.help && self.hertz == other.hertz
-    }
-}
-
 
 fn main() {
     // Retrieve arguments from the terminal first
@@ -86,7 +70,7 @@ fn main() {
     }
 
 
-    let mut machine = Machine::new();
+    let mut machine = Machine::new(args.clone());
 
     // Initialize peripherals
     machine.set_up_peripherals();
@@ -197,6 +181,10 @@ fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
                 match arg.as_str() {
                     "-h" | "--help" => {
                         result.help = true;
+                    }
+
+                    "--legacy-encoding" => {
+                        result.legacy_encoding = true;
                     }
 
 

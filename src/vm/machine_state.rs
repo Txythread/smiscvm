@@ -4,7 +4,8 @@ use colorize::AnsiColor;
 use crossterm::terminal::{size, Clear, ClearType};
 use crossterm::cursor::{ position };
 use crossterm::{cursor, execute};
-use crate::util::exit::{ exit, ExitCode };
+use crate::ArgumentList;
+use crate::util::exit::{exit, ExitCode };
 
 pub const MEMORY_PAGE_SIZE: usize = 4096;
 pub const MEMORY_SIZE: usize = MEMORY_PAGE_SIZE * 16; // The sixteen pages are chosen randomly, but that'd be 64kiB or 65536 bytes (if I remember correctly)
@@ -41,6 +42,10 @@ pub struct MachineState {
     // Information specific to the virtual machine,
     // but is not for pure interest variables
     pub halted: bool,
+
+    // Configuration, not technically part of the machine at all
+    // but still makes stuff easier.
+    pub config: ArgumentList,
 }
 
 #[derive(Clone, Copy)]
@@ -49,8 +54,8 @@ pub struct ScreenPrintingInfo {
 }
 
 impl MachineState {
-    pub fn new() -> MachineState {
-        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string(), completed_clock_cycles: 0, completed_instructions: 0, halted: false }
+    pub fn new(config: ArgumentList) -> MachineState {
+        MachineState { registers: [0; 32], flag1: false, flag2: false, memory_address_ptr: 0, current_instruction: 0, micro_op_counter: 0, alu_arg_1: 0, alu_arg_2: 0, program_counter: 0, main_bus: 0, memory: [0; MEMORY_SIZE], std_transmitter_contents: 0, stdout: "\n\n\n\n".to_string(), completed_clock_cycles: 0, completed_instructions: 0, halted: false, config }
     }
 
 

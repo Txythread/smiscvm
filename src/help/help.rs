@@ -12,6 +12,8 @@ pub fn print_help(arguments: ArgumentList) {
 
     if arguments.hertz.is_some() { print_help_file("hertz".to_string()); return; }
 
+    if arguments.legacy_encoding { print_help_file("legacy_encoding".to_string()); return; }
+
     println!("{}", termimad::inline(HELP_STRING));
 }
 

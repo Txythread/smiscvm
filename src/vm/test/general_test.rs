@@ -4,6 +4,7 @@ const PROGRAM: &'static [u8] = include_bytes!("../../../test_code/general-test/t
 
 #[cfg(test)]
 mod tests {
+    use crate::ArgumentList;
     use crate::vm::machine::Machine;
     use crate::vm::test::general_test::PROGRAM;
 
@@ -13,7 +14,7 @@ mod tests {
         // The program is an assembled version of test_code/general_test/test.s
         // The program should store 8 at memory address 0x3000 if all instructions work as expected
 
-        let mut machine = Machine::new();
+        let mut machine = Machine::new(ArgumentList::new());
         machine.set_up_peripherals();
 
         machine.state.push_to_memory(PROGRAM.to_vec(), 0x00_00_00_00);

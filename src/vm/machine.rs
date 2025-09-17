@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use rand::random;
-use crate::instruction::instruction::{ OUTPUT_MAP_STRING, get_generated_instructions };
+use crate::ArgumentList;
+use crate::instruction::instruction::{OUTPUT_MAP_STRING, get_generated_instructions };
 use crate::vm::machine_state::MachineState;
 use crate::vm::peripheral::Peripheral;
 use crate::vm::peripherals::immediate_out_peripheral::ImmediateOutPeripheral;
@@ -28,8 +29,8 @@ pub struct Machine {
 }
 
 impl Machine {
-    pub fn new() -> Self {
-        Machine{ peripherals: vec![], state: MachineState::new(), instructions: get_generated_instructions() }
+    pub fn new(config: ArgumentList) -> Self {
+        Machine{ peripherals: vec![], state: MachineState::new(config), instructions: get_generated_instructions() }
     }
 
     pub fn set_up_peripherals(&mut self) {
@@ -190,11 +191,12 @@ impl Machine {
 
 #[cfg(test)]
 mod tests {
+    use crate::ArgumentList;
     use crate::vm::machine::Machine;
 
     #[test]
     fn test_execute_control_indexes(){
-        let mut machine = Machine::new();
+        let mut machine = Machine::new(ArgumentList::new());
 
         machine.state.registers[0] = 10;
 
@@ -205,7 +207,7 @@ mod tests {
 
     #[test]
     fn test_clock_pulse(){
-        let mut machine = Machine::new();
+        let mut machine = Machine::new(ArgumentList::new());
 
         // Add the peripherals
         machine.set_up_peripherals();
@@ -238,7 +240,7 @@ mod tests {
 
     #[test]
     fn test_add_instruction(){
-        let mut machine = Machine::new();
+        let mut machine = Machine::new(ArgumentList::new());
 
         // Add the peripherals
         machine.set_up_peripherals();
