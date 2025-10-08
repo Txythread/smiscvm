@@ -1,19 +1,22 @@
+.mode code
 .section "CODE"
-main:
+
+
+_main:
 	# Load stack address
-	adrp sp, stack-end@PAGE
-	add sp, stack-end@PAGEOFF
+	adrp sp, stack_end@PAGE
+	add sp, stack_end@PAGEOFF
 	
 	# Load address of msg
 	adrp x0, msg@PAGE
 	add x0, msg@PAGEOFF
 	
 	# Load length of msg
-	mov x1, msg-length
+	mov x1, msg_end@PAGEOFF - msg@PAGEOFF
 	
 	# Get address of and call print function
-	adrp x2, print@PAGE
-	add x2, print@PAGEOFF
+	adrp x2, _print@PAGE
+	add x2, _print@PAGEOFF
 	cal x2
 	
 
@@ -21,11 +24,13 @@ main:
 
 !include debuglib
 
+
+.mode data
 .section "DATA"
 msg:
 	.stc "Hello, world!"
-.msg-length 13
+msg_end:
 
 .section "STACK"
 .section "END"
-stack-end:
+stack_end:

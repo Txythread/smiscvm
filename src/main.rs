@@ -8,6 +8,7 @@ use std::path::PathBuf;
 use crossterm::execute;
 use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::cursor::{Hide, Show};
+use crossterm::style::Stylize;
 use ctrlc;
 use crate::vm::machine::Machine;
 use crate::vm::machine_state::ScreenPrintingInfo;
@@ -53,6 +54,12 @@ fn main() {
     if args.help {  print_help(args); return;  }
 
     // Load the file
+    if args.file.clone().is_none(){
+        let error = "No input file provided".red().to_string();
+        println!("{}", error);
+        std::process::exit(100);
+    }
+
     let path = expand_path(&args.file.clone().unwrap()).unwrap();
     let input_file = fs::read(path.clone());
 

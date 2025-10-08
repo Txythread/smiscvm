@@ -1,21 +1,25 @@
+.mode text
 .section "CODE"
+
 # Global register usage:
 # x4 ... current position in msg
 # x5 ... msg end
 # x6 ... end function
 # x7 ... loop function
-main:
+
+
+_main:
 	# Register overwrites:
 	# x4 ... msg start
 	adrp x4, msg@PAGE
 	add x4, msg@PAGEOFF
 	mov x5, x4
-	add x5, msg-len
-	adrp x6, end@PAGE
+	add x5, msg_len
+	adrp x6, _end@PAGE
 	mov x7, x6
-	add x6, end@PAGEOFF
-	add x7, loop@PAGEOFF
-loop:
+	add x6, _end@PAGEOFF
+	add x7, _loop@PAGEOFF
+_loop:
 	# Register usage overwrites:
 	# x0 ... output data
 	# x1 ... current position in msg (x4) - end of message (x5)
@@ -27,10 +31,12 @@ loop:
 	jmpz x1, x6
 	add x4, 1
 	jmp x7
-end:
+_end:
 	hlt
 
+.mode data
 .section "DATA"
+
 msg:
 	.ascii "Hello, world!"
-.msg-len 13
+.msg_len 13
