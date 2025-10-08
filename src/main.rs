@@ -1,5 +1,6 @@
+use clap::Parser;
 use std::env;
-use std::fmt::{Debug, Formatter};
+use std::fmt::Debug;
 use std::thread::sleep;
 use std::time::Duration;
 use std::fs;
@@ -19,11 +20,17 @@ mod help;
 mod util;
 
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Parser)]
 pub struct ArgumentList{
     pub file: Option<String>,
+
+    #[clap(short, long)]
     pub help: bool,                             // -h or --help
-    pub hertz: Option<u16>,                     // -hz or --hertz
+                
+    #[clap(long)]
+    pub hertz: Option<Option<u16>>,             // -hz or --hertz
+
+    #[clap(long)]
     pub legacy_encoding: bool,                  // --legacy-encoding
 }
 
@@ -40,11 +47,8 @@ impl ArgumentList{
 }
 
 fn main() {
-    // Retrieve arguments from the terminal first
-    let cli_args: Vec<String> = env::args().collect();
-
     // Generate a reasonable argument list
-    let args = get_arguments_from_list(cli_args);
+    let args = ArgumentList::parse();
 
     if args.help {  print_help(args); return;  }
 
@@ -103,18 +107,15 @@ fn main() {
         let main_bus_contents = machine.simulate_clock_pulse();
 
         if let Some(hertz) = args.hertz {
-            sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
+            sleep(Duration::from_secs_f32(0.5f32 / (hertz.unwrap() as f32)));
         }
 
         machine.state.print(true, main_bus_contents, &mut screen_info);
 
         if let Some(hertz) = args.hertz {
-            sleep(Duration::from_secs_f32(0.5f32 / (hertz as f32)));
+            sleep(Duration::from_secs_f32(0.5f32 / (hertz.unwrap() as f32)));
         }
     }
-
-    execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
-
 }
 
 
@@ -132,105 +133,4 @@ pub fn expand_path(path_str: &str) -> Option<PathBuf> {
     Some(expanded)
 }
 
-fn get_arguments_from_list(args: Vec<String>) -> ArgumentList {
-    // Remove the first argument as it's just the name of the bin
-    let mut args = args;
-    args.remove(0);
 
-    // Make space for the result
-    let mut result = ArgumentList::new();
-
-    // Sort the arguments
-    // The first out-of-context (not belonging or being connected to a flag (-)) is the input file
-    let mut current_flag: Option<String> = None;
-
-    for arg in args {
-        if let Some(arg_first_char) = arg.chars().nth(0){
-            // Check if this argument is necessary for the last flag
-            if let Some(flag) = current_flag.clone(){
-                let value = arg.clone();
-
-                // Add it if it is not a call for help
-                if value == "--help" || value == "-h" {
-                    result.help = true;
-                }
-
-                match flag.as_str() {
-                    "-hz" | "--hertz" => {
-                        if let Some(value) = value.parse::<u16>().ok() {
-                            result.hertz = Some(value);
-                        }else{
-                            exit(format!("Positive integer (lower than 2^16) expected as a value for hertz, but {} was found.", value), ExitCode::BadArgument);
-                        }
-                    }
-
-                    _=>{
-                        exit(format!("Unknown flag {}.", flag), ExitCode::BadArgument);
-                    }
-                }
-
-                current_flag = None;
-                continue;
-            }
-
-            // Check if the argument is a flag
-            if arg_first_char == '-' {
-                // This is a flag
-                // Therefore, look if the next argument also needs to be checked or the argument can be added right away
-
-                match arg.as_str() {
-                    "-h" | "--help" => {
-                        result.help = true;
-                    }
-
-                    "--legacy-encoding" => {
-                        result.legacy_encoding = true;
-                    }
-
-
-                    _=>{
-                        current_flag = Some(arg);
-                    }
-                }
-                continue;
-            }
-
-            // The argument is not a flag, nor is it used after a flag, ...
-            // ... so it has to be the name of the file
-            if result.file.is_some(){
-                exit(format!("\"{}\" and \"{:?}\" can't both be input files.", result.file.clone().unwrap(), arg), ExitCode::BadArgument);
-            }
-
-            // Isn't yet written, so add the file name
-            result.file = Some(arg);
-
-            // Make sure the file name is valid
-            if !result.file.clone().unwrap().ends_with(".o") {
-                exit(format!("Expected input file with \".o\" suffix, but \"{}\" was found.", result.file.clone().unwrap()), ExitCode::BadArgument);
-            }
-        }
-    }
-
-    if current_flag.is_some() && !result.help {
-        exit("All flags that act like parameters must have their second part provided.".to_string(), ExitCode::BadArgument);
-    }
-
-    if current_flag.is_some() {
-        // Set the argument anyway as help is requested.
-        match current_flag.clone().unwrap().as_str() {
-            "-hz" | "--hertz" => {
-                result.hertz = Some(0);
-            }
-
-            _=>{
-                exit(format!("Unknown flag {}.", current_flag.unwrap()), ExitCode::BadArgument);
-            }
-        }
-    }
-
-    if result.needs_input_file(){
-        exit("No input files provided.".to_string(), ExitCode::BadArgument);
-    }
-
-    result
-}
