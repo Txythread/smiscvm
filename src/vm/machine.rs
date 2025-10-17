@@ -11,6 +11,7 @@ use crate::vm::peripherals::mem_byte_in_peripheral::MemByteInPeripheral;
 use crate::vm::peripherals::mem_in_peripheral::MemInPeripheral;
 use crate::vm::peripherals::mem_out_peripheral::MemOutPeripheral;
 use crate::vm::peripherals::minus_peripheral::SubPeripheral;
+use crate::vm::peripherals::nand_peripheral::NandPeripheral;
 use crate::vm::peripherals::pc_in_peripheral::ProgramCounterInputEnablePeripheral;
 use crate::vm::peripherals::pc_inc_peripheral::PCIncPeripheral;
 use crate::vm::peripherals::plus_peripheral::PlusPeripheral;
@@ -42,6 +43,7 @@ impl Machine {
         let mem_byte_in_peripheral = MemByteInPeripheral {};
         let mem_byte_out_peripheral = MemByteOutPeripheral {};
         let minus_peripheral = SubPeripheral {};
+        let nand_peripheral = NandPeripheral {};
         let pc_in_peripheral = ProgramCounterInputEnablePeripheral {};
         let pc_inc_peripheral = PCIncPeripheral {};
         let plus_peripheral = PlusPeripheral {};
@@ -61,6 +63,7 @@ impl Machine {
         self.peripherals.push(Box::new(mem_out_peripheral));
         self.peripherals.push(Box::new(mem_byte_out_peripheral));
         self.peripherals.push(Box::new(minus_peripheral));
+        self.peripherals.push(Box::new(nand_peripheral));
         self.peripherals.push(Box::new(pc_in_peripheral));
         self.peripherals.push(Box::new(pc_inc_peripheral));
         self.peripherals.push(Box::new(plus_peripheral));
