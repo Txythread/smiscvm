@@ -14,6 +14,8 @@ pub fn print_help(arguments: ArgumentList) {
 
     if arguments.legacy_encoding { print_help_file("legacy_encoding".to_string()); return; }
 
+    if arguments.short_output { print_help_file("short_output".to_string()); return; }
+
     println!("{}", termimad::inline(HELP_STRING));
 }
 
