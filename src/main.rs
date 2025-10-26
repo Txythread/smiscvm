@@ -4,6 +4,7 @@ use std::fmt::Debug;
 use std::thread::sleep;
 use std::time::Duration;
 use std::fs;
+use std::io::stdout;
 use std::path::PathBuf;
 use crossterm::execute;
 use crossterm::terminal::{EnterAlternateScreen, LeaveAlternateScreen};
@@ -33,11 +34,14 @@ pub struct ArgumentList{
 
     #[clap(long)]
     pub legacy_encoding: bool,                  // --legacy-encoding
+
+    #[clap(long)]
+    pub short_output: bool,                     // --short-output
 }
 
 impl ArgumentList{
     pub fn new() -> ArgumentList{
-        ArgumentList{file: None, help: false, hertz: None, legacy_encoding: false}
+        ArgumentList{file: None, help: false, hertz: None, legacy_encoding: false, short_output: false }
     }
 
     /// Checks whether the current amount of data is enough (0) or the file name is missing (1)
@@ -92,37 +96,73 @@ fn main() {
     // Set the instruction to 'add x0, 0', which should do nothing but load the next instruction in practice.
     machine.state.current_instruction = 0x50_00_00_00;
 
-    // Enter the alternate screen so the original screen contents won't be lost
-    // P.S: the same for the cursor with Hide/Show
-    execute!(std::io::stdout(), EnterAlternateScreen, Hide).unwrap();
+    if !args.short_output {
+        // Enter the alternate screen so the original screen contents won't be lost
+        // P.S: the same for the cursor with Hide/Show
+        execute!(std::io::stdout(), EnterAlternateScreen, Hide).unwrap();
 
-    // Change Ctrl+C behaviour to return to the original screen before exiting
-    ctrlc::set_handler(move || {
-        execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
-        std::process::exit(0);
-    })
-        .expect("Error setting Ctrl-C handler");
+        // Change Ctrl+C behaviour to return to the original screen before exiting
+        ctrlc::set_handler(move || {
+            execute!(std::io::stdout(), LeaveAlternateScreen, Show).unwrap();
+            std::process::exit(0);
+        })
+            .expect("Error setting Ctrl-C handler");
 
 
-    // The screen printing info required to print by machine.state.print()
-    // This is for detecting when an entire redraw is required
-    let mut screen_info: Option<ScreenPrintingInfo> = None;
+        // The screen printing info required to print by machine.state.print()
+        // This is for detecting when an entire redraw is required
+        let mut screen_info: Option<ScreenPrintingInfo> = None;
 
-    loop {
-        machine.state.print(false, 0, &mut screen_info);
+        loop {
+            machine.state.print(false, 0, &mut screen_info);
 
-        let main_bus_contents = machine.simulate_clock_pulse();
+            let main_bus_contents = machine.simulate_clock_pulse();
 
-        if let Some(hertz) = args.hertz {
-            sleep(Duration::from_secs_f32(0.5f32 / (hertz.unwrap() as f32)));
+            if let Some(hertz) = args.hertz {
+                sleep(Duration::from_secs_f32(0.5f32 / (hertz.unwrap() as f32)));
+            }
+
+            machine.state.print(true, main_bus_contents, &mut screen_info);
+
+            if let Some(hertz) = args.hertz {
+                if let Some(hertz) = args.hertz {
+                    sleep(Duration::from_secs_f32(1f32 / (hertz.unwrap() as f32)));
+                }
+
+                machine.state.print(true, main_bus_contents, &mut screen_info);
+                sleep(Duration::from_secs_f32(1f32 / (hertz.unwrap() as f32)));
+            }
+        }
+    } else {
+        // Remove lines for alignment (when in full-screen mode) from the vm
+        machine.state.stdout = String::new();
+
+        // Only whatever was changed needs to be printed
+        let mut previous_output = String::from("");
+        loop {
+            // Wait (for simulating the correct frequency)
+            if let Some(hertz) = args.hertz {
+                sleep(Duration::from_secs_f32(1f32 / (hertz.unwrap() as f32)));
+            }
+
+            // Actually tick
+            machine.simulate_clock_pulse();
+
+            // Print the new output
+            let current_output = machine.state.stdout.clone();
+            let output_difference = current_output.strip_prefix(previous_output.as_str()).unwrap();
+            print!("{}", output_difference);
+
+            // Flush the buffer
+            execute!(stdout()).unwrap();
+
+            previous_output = current_output;
+
+
         }
 
-        machine.state.print(true, main_bus_contents, &mut screen_info);
-
-        if let Some(hertz) = args.hertz {
-            sleep(Duration::from_secs_f32(0.5f32 / (hertz.unwrap() as f32)));
-        }
     }
+
 }
 
 
