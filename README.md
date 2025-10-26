@@ -10,14 +10,6 @@ curl -s https://raw.githubusercontent.com/Txythread/smiscasm/master/install-smis
 ```
 *This might ask you for your password. This is requrired to move binaries into `/usr/local/bin`. If you don't want to enter your password in someones script, you can do this manually. Hint: If you want to do this, take a look at `production.sh` or `build.sh` in each of the downloaded directories if you wish to proceed this way.*
 
-### Install only smiscvm
-1. Make sure you have [`smiscasm`](https://github.com/Txythread/smiscasm) installed
-2. Download smiscvm using `git clone https://github.com/Txythread/smiscvm`
-3. "cd" into the directory (`cd smiscasm`)
-4. Execute the production scirpt (`./production.sh`)
-5. This might ask you to enter your password to move files into /usr/local/bin.
-If you don't want this, cancel the program and execute `sudo mv target/release/smiscvm /usr/local/bin` manually
-
 
 ## Basic Usage
 First, assemble your code as documented in smiscasm's documentation. Then, invoke smiscvm with the name of the resulting .o file as an argument: `smiscvm my_file.o`.
